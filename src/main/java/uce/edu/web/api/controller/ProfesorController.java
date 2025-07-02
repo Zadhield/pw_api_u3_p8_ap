@@ -9,6 +9,7 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import uce.edu.web.api.repository.modelo.Profesor;
@@ -35,19 +36,42 @@ public class ProfesorController {
     @POST
     @Path("")
     public void guardar (@RequestBody Profesor profesor){
+        this.profesorService.guardar(profesor);
+    }
 
+    @PUT
+    @Path("/{id}")
+    public void actualizarPorId(@RequestBody Profesor profesor, @PathParam("id") Integer id){
+        profesor.setId(id);
+        this.profesorService.actualizarPorId(profesor);
     }
 
     
     @PATCH
     @Path("/{id}")
     public void actualizarParcial(@RequestBody Profesor profesor, @PathParam("id") Integer id) {
+        profesor.setId(id);
+        Profesor p = this.profesorService.buscarPorId(id);
+        if (profesor.getNombre()!=null){
+            p.setNombre(profesor.getNombre());
+        }
+         if (profesor.getApellido() != null) {
+            p.setApellido(profesor.getApellido());
+        }
+        if (profesor.getTelf() != null) {
+            p.setTelf(profesor.getTelf());
+        }
+        if (profesor.getCedula() != null) {
+            p.setCedula(profesor.getCedula());
+        }
+        this.profesorService.actualizarParcialPorId(p);
 
     }
 
     @DELETE
     @Path("/{id}")
     public void borrarporId(@PathParam("id") Integer id) {
+        this.profesorService.borrarPorId(id);
 
     }
 

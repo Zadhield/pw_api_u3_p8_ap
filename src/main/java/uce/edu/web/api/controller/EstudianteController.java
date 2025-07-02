@@ -41,22 +41,24 @@ public class EstudianteController {
 
     @PUT
     @Path("/{id}")
-    public void actualizar(@RequestBody Estudiante estudiante, @PathParam("id") Integer id){
+    public void actualizarPorId(@RequestBody Estudiante estudiante, @PathParam("id") Integer id){
+       estudiante.setId(id);
+       this.estudianteService.actualizarPorId(estudiante);
+    }
+
+    @PATCH
+    @Path ("/{id}")
+    public void actualizarParcialPorId(@RequestBody Estudiante estudiante, @PathParam("id") Integer id){
         estudiante.setId(id);
         Estudiante e = this.estudianteService.buscarPorId(id);
         if(estudiante.getApellido()!=null){
             e.setApellido(estudiante.getApellido());
         }
-        this.estudianteService.actualizarPorId(e);
-    }
-
-    @PATCH
-    @Path ("/{id}")
-    public void actualizarParcial(@RequestBody Estudiante estudiante, @PathParam("id") Integer id){
-        estudiante.setId(id);
-        Estudiante e = this.estudianteService.buscarPorId(id);
-        if(estudiante.getApellido()!=null){
-            e.setApellido(estudiante.getApellido());
+        if(estudiante.getNombre()!=null){
+            e.setNombre(estudiante.getNombre());
+        }
+        if(estudiante.getFechaNacimiento()!=null){
+            e.setFechaNacimiento(estudiante.getFechaNacimiento());
         }
         this.estudianteService.actualizarParcialPorId(e);
         
@@ -65,6 +67,7 @@ public class EstudianteController {
      @DELETE
      @Path("/{id}")
     public void borrarporId(@PathParam ("id") Integer id){
+        this.estudianteService.borrarPorId(id);
         
     }
 
