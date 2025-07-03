@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @Entity
 @Table(name = "estudiante")
@@ -24,9 +25,10 @@ public class Estudiante {
 
     @Column(name = "estu_apellido")
     private String apellido;
-
+   
     @Column(name = "estu_fecha_nacimiento")
     private LocalDateTime fechaNacimiento;
+
     @Column(name ="estu_genero")
     private String genero;
     
@@ -61,7 +63,7 @@ public class Estudiante {
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
-
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     public LocalDateTime getFechaNacimiento() {
         return fechaNacimiento;
     }
