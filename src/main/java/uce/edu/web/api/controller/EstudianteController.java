@@ -30,12 +30,12 @@ public class EstudianteController {
 
     @GET    
     @Path ("{id}")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public  Response consultarPorId(@PathParam("id")Integer id){
         
         return Response.status(227).entity(this.estudianteService.buscarPorId(id)).build();
     }
-    //?genero=F&provincia=pichincha
+    //?genero=Masculino&provincia=pichincha
     @GET
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
@@ -49,23 +49,28 @@ public class EstudianteController {
     
     @POST
     @Path("")
-    @Consumes(MediaType.APPLICATION_XML)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Operation(
         summary = "Guardar estudiante", description = "Este endpoint permite guardar un nuevo estudiante")
-    public void guardar(@RequestBody Estudiante estudiante) {
+    public Response guardar(@RequestBody Estudiante estudiante) {
         this.estudianteService.guardar(estudiante);
+        return Response.status(Response.Status.OK).build();
     }
+
 
     @PUT
     @Path("/{id}")
-    public void actualizarPorId(@RequestBody Estudiante estudiante, @PathParam("id") Integer id){
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response actualizarPorId(@RequestBody Estudiante estudiante, @PathParam("id") Integer id){
        estudiante.setId(id);
        this.estudianteService.actualizarPorId(estudiante);
+       return Response.status(Response.Status.OK).build();
     }
 
     @PATCH
     @Path ("/{id}")
-    public void actualizarParcialPorId(@RequestBody Estudiante estudiante, @PathParam("id") Integer id){
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response actualizarParcialPorId(@RequestBody Estudiante estudiante, @PathParam("id") Integer id){
         estudiante.setId(id);
         Estudiante e = this.estudianteService.buscarPorId(id);
         if(estudiante.getApellido()!=null){
@@ -77,15 +82,18 @@ public class EstudianteController {
         if(estudiante.getFechaNacimiento()!=null){
             e.setFechaNacimiento(estudiante.getFechaNacimiento());
         }
+        if(estudiante.getGenero()!=null){
+            e.setGenero(estudiante.getGenero());
+        }
         this.estudianteService.actualizarParcialPorId(e);
-        
+         return Response.status(Response.Status.OK).build();
     }
 
      @DELETE
      @Path("/{id}")
-    public void borrarporId(@PathParam ("id") Integer id){
+    public Response borrarporId(@PathParam ("id") Integer id){
         this.estudianteService.borrarPorId(id);
-        
+         return Response.status(Response.Status.OK).build();
     }
 
 }
