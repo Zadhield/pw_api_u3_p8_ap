@@ -7,7 +7,7 @@ import uce.edu.web.api.repository.modelo.Estudiante;
 import uce.edu.web.api.service.to.EstudianteTo;
 
 public interface IEstudianteService {
-    public EstudianteTo buscarPorId(Integer id, UriInfo uriInfo);
+    public Estudiante buscarPorId(Integer id);
 
     public List<Estudiante> buscarTodos(String genero);
 

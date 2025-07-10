@@ -20,7 +20,7 @@ public class HijoRepoImpl implements HijoRepo{
     @Override
     public List<Hijo> buscarPorEstudianteId(Integer id) {
         TypedQuery<Hijo> myQuery = this.entityManager.
-        createQuery("SELECT h FROM Hijo e WHERE h.estudiante.id =: id", Hijo.class);
+        createQuery("SELECT h FROM Hijo h WHERE h.estudiante.id =: id", Hijo.class);
         myQuery.setParameter("id", id);
         return myQuery.getResultList();
         

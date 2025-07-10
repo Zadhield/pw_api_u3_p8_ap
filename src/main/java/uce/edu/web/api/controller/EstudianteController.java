@@ -26,6 +26,7 @@ import uce.edu.web.api.repository.modelo.Estudiante;
 import uce.edu.web.api.repository.modelo.Hijo;
 import uce.edu.web.api.service.HijoService;
 import uce.edu.web.api.service.IEstudianteService;
+import uce.edu.web.api.service.mapper.EstudianteMapper;
 import uce.edu.web.api.service.to.EstudianteTo;
 
 @Path("/estudiantes")
@@ -40,7 +41,9 @@ public class EstudianteController {
     @Path ("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public  Response consultarPorId(@PathParam("id")Integer id,@Context UriInfo uriInfo){
-            EstudianteTo estu= this.estudianteService.buscarPorId(id, uriInfo);
+            
+        EstudianteTo estu= EstudianteMapper.toTo(this.estudianteService.buscarPorId(id)); 
+        estu.buildURI(uriInfo);
         return Response.status(227).entity(estu).build();
     }
     //?genero=Masculino&provincia=pichincha
