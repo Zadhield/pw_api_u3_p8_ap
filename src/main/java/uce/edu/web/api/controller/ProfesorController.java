@@ -22,6 +22,8 @@ import jakarta.ws.rs.core.UriInfo;
 import uce.edu.web.api.repository.modelo.Materia;
 import uce.edu.web.api.repository.modelo.Profesor;
 import uce.edu.web.api.service.IProfesorService;
+import uce.edu.web.api.service.MateriaService;
+import uce.edu.web.api.service.mapper.ProfesorMapper;
 import uce.edu.web.api.service.to.ProfesorTo;
 
 @Path("/profesores")
@@ -29,26 +31,37 @@ public class ProfesorController {
 
     @Inject
     private IProfesorService profesorService;
+    @Inject
+    private MateriaService materiaService;
 
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response consultarPorId(@PathParam("id") Integer id, @Context UriInfo uriInfo) {
-        ProfesorTo profe = this.profesorService.buscarPorId(id, uriInfo);
+        ProfesorTo profe = ProfesorMapper.toTo(this.profesorService.buscarPorId(id));
+        profe.buildURI(uriInfo);
         return Response.status(Response.Status.OK).entity(profe).build();
     }
 
     @GET
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response consultarTodos() {
-        return Response.status(Response.Status.OK).entity(this.profesorService.buscarTodos()).build();
+    public Response consultarTodos(@Context UriInfo uriInfo) {
+        List<Profesor> profesores = this.profesorService.buscarTodos();
+        List<ProfesorTo> listaTo = new ArrayList<>();
+        for (Profesor p : profesores) {
+            ProfesorTo profe = ProfesorMapper.toTo(p);
+            profe.buildURI(uriInfo);
+            listaTo.add(profe);
+        }
+        return Response.status(Response.Status.OK).entity(listaTo).build();
     }
 
     @POST
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response guardar(@RequestBody Profesor profesor) {
+    public Response guardar(@RequestBody ProfesorTo profesorTo) {
+        Profesor profesor = ProfesorMapper.toEntity(profesorTo);
         this.profesorService.guardar(profesor);
         return Response.status(Response.Status.OK).build();
     }
@@ -56,38 +69,33 @@ public class ProfesorController {
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response actualizarPorId(@RequestBody Profesor profesor, @PathParam("id") Integer id) {
+    public Response actualizarPorId(@RequestBody ProfesorTo profesorTo, @PathParam("id") Integer id) {
+        Profesor profesor = ProfesorMapper.toEntity(profesorTo);
         profesor.setId(id);
         this.profesorService.actualizarPorId(profesor);
-        return Response.status(Response.Status.OK).build();
+        return Response.ok().build();
     }
 
-    /*
-     * @PATCH
-     * 
-     * @Path("/{id}")
-     * 
-     * @Consumes(MediaType.APPLICATION_JSON)
-     * public Response actualizarParcial(@RequestBody Profesor
-     * profesor, @PathParam("id") Integer id) {
-     * profesor.setId(id);
-     * Profesor p = this.profesorService.buscarPorId(id);
-     * if (profesor.getNombre() != null) {
-     * p.setNombre(profesor.getNombre());
-     * }
-     * if (profesor.getApellido() != null) {
-     * p.setApellido(profesor.getApellido());
-     * }
-     * if (profesor.getTelf() != null) {
-     * p.setTelf(profesor.getTelf());
-     * }
-     * if (profesor.getCedula() != null) {
-     * p.setCedula(profesor.getCedula());
-     * }
-     * this.profesorService.actualizarParcialPorId(p);
-     * return Response.status(Response.Status.OK).build();
-     * }
-     */
+    @PATCH
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response actualizarParcialPorId(@RequestBody ProfesorTo profesorTo, @PathParam("id") Integer id) {
+        Profesor p = this.profesorService.buscarPorId(id);
+        if (profesorTo.getNombre() != null) {
+            p.setNombre(profesorTo.getNombre());
+        }
+        if (profesorTo.getApellido() != null) {
+            p.setApellido(profesorTo.getApellido());
+        }
+        if (profesorTo.getTelf() != null) {
+            p.setTelf(profesorTo.getTelf());
+        }
+        if (profesorTo.getCedula() != null) {
+            p.setCedula(profesorTo.getCedula());
+        }
+        this.profesorService.actualizarParcialPorId(p);
+        return Response.status(Response.Status.OK).build();
+    }
 
     @DELETE
     @Path("/{id}")
@@ -101,14 +109,7 @@ public class ProfesorController {
     @Path("/{id}/materias")
     public List<Materia> obtenerMateriasPorId(@PathParam("id") Integer id) {
 
-        Materia m1 = new Materia();
-        m1.setNombre("Programacion 1");
-        Materia m2 = new Materia();
-        m2.setNombre("Inteligencia Artificial");
-        List<Materia> materias = new ArrayList<>();
-        materias.add(m1);
-        materias.add(m2);
-        return materias;
+        return this.materiaService.buscarPorProfesorId(id);
 
     }
 

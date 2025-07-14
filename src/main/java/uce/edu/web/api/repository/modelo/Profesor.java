@@ -1,10 +1,13 @@
 package uce.edu.web.api.repository.modelo;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,6 +30,9 @@ public class Profesor {
 
     @Column(name = "prof_cedula")
     private Integer cedula;
+
+    @OneToMany(mappedBy =  "profesor")
+    private List<Materia> materias;
 
     public Integer getId() {
         return id;

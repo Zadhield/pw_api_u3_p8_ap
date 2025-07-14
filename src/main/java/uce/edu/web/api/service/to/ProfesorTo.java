@@ -15,17 +15,12 @@ public class ProfesorTo {
     private Integer cedula;
     public Map<String, String> _links = new HashMap<>();
 
-    public ProfesorTo(Integer id, String nombre, String apellido, Integer telf, Integer cedula, UriInfo uriInfo) {
-        this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.telf = telf;
-        this.cedula = cedula;
-
-        URI todasMaterias = uriInfo.getBaseUriBuilder().path(ProfesorController.class)
+  
+     public void buildURI (UriInfo uriInfo){
+         URI todasMaterias = uriInfo.getBaseUriBuilder().path(ProfesorController.class)
         .path(ProfesorController.class,"obtenerMateriasPorId").build(id);
         _links.put("materias",todasMaterias.toString());
-    }
+     }
 
     public Integer getId() {
         return id;
@@ -37,6 +32,14 @@ public class ProfesorTo {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public Map<String, String> get_links() {
+        return _links;
+    }
+
+    public void set_links(Map<String, String> _links) {
+        this._links = _links;
     }
 
     public void setNombre(String nombre) {
